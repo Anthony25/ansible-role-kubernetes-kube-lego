@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ kubernetes_kube_lego_configmap }}
+  namespace: {{ kubernetes_kube_lego_namespace }}
+data:
+  lego.email: "{{ kubernetes_kube_lego_email }}"
+  lego.url: "{{ kubernetes_kube_lego_api_url }}"
+  lego.default-ingress-class: "{{ kubernetes_kube_lego_default_ingress_class }}"

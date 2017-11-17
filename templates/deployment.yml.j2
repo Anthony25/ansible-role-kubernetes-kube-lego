@@ -1,0 +1,66 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ kubernetes_kube_lego_deployment }}
+  namespace: {{ kubernetes_kube_lego_namespace }}
+  labels:
+    app: {{ kubernetes_kube_lego_app }}
+{% if kubernetes_kube_lego_deployment_labels %}
+    {{ kubernetes_kube_lego_deployment_labels | to_nice_yaml | indent(4) }}
+{% endif %}
+{% if kubernetes_kube_lego_deployment_annotations %}
+  annotations:
+    {{ kubernetes_kube_lego_deployment_annotations | to_nice_yaml | indent(4) }}
+{% endif %}
+spec:
+  replicas: {{ kubernetes_kube_lego_replicas }}
+  revisionHistoryLimit: {{ kubernetes_kube_lego_revision_history }}
+  selector:
+    matchLabels:
+      app: {{ kubernetes_kube_lego_app }}
+  template:
+    metadata:
+      labels:
+        app: {{ kubernetes_kube_lego_app }}
+    spec:
+      serviceAccountName: {{ kubernetes_kube_lego_service_account }}
+      containers:
+      - image: {{ kubernetes_kube_lego_image }}
+        imagePullPolicy: Always
+        name: kube-lego
+        resources:
+          {{ kubernetes_kube_lego_resources | to_yaml | indent(10) }}
+        ports:
+        - containerPort: 8080
+        env:
+        - name: LEGO_EMAIL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ kubernetes_kube_lego_configmap }}
+              key: lego.email
+        - name: LEGO_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ kubernetes_kube_lego_configmap }}
+              key: lego.url
+        - name: LEGO_DEFAULT_INGRESS_CLASS
+          valueFrom:
+            configMapKeyRef:
+              name: {{ kubernetes_kube_lego_configmap }}
+              key: lego.default-ingress-class
+        - name: LEGO_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: LEGO_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+      restartPolicy: Always
+status: {}

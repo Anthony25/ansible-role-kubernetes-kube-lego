@@ -1,0 +1,30 @@
+---
+
+kubernetes_kube_lego_image: "jetstack/kube-lego:0.1.5"
+
+kubernetes_kube_lego_namespace: "kube-lego"
+kubernetes_kube_lego_deployment: "kube-lego-deployment"
+kubernetes_kube_lego_service_account: "kube-lego"
+kubernetes_kube_lego_configmap: "kube-lego"
+kubernetes_kube_lego_app: "kube-lego"
+
+kubernetes_kube_lego_node_selector: {}
+kubernetes_kube_lego_replicas: 1
+kubernetes_kube_lego_revision_history: 1
+
+kubernetes_kube_lego_deployment_labels: {}
+kubernetes_kube_lego_deployment_annotations: {}
+
+kubernetes_kube_lego_resources:
+  limits:
+    cpu: "10m"
+    memory: "20Mi"
+  requests:
+    cpu: "10m"
+    memory: "20Mi"
+
+kubernetes_kube_lego_email: "cert@example.com"
+kubernetes_kube_lego_api_url: "https://acme-v01.api.letsencrypt.org/directory"
+kubernetes_kube_lego_default_ingress_class: "nginx"
+
+# vim: set ts=2 sw=2:
